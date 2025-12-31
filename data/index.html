@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ESP32 WebSocket</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    button { font-size: 20px; padding: 14px 22px; margin-right: 10px; }
+    #status { margin-top: 16px; font-size: 18px; }
+  </style>
+</head>
+<body>
+  <h2>ESP32 WebSocket LED Control</h2>
+  <button onclick="sendCmd('H')">ON</button>
+  <button onclick="sendCmd('L')">OFF</button>
+  <div id="status">Status: connecting...</div>
+
+<script>
+  let ws;
+
+  function connectWS() {
+    const url = `ws://${location.hostname}:81/`;
+    ws = new WebSocket(url);
+
+    ws.onopen = () => {
+      document.getElementById('status').textContent = 'Status: connected';
+      ws.send('S');
+    };
+
+    ws.onmessage = (e) => {
+      document.getElementById('status').textContent = 'Status: ' + e.data;
+    };
+
+    ws.onclose = () => {
+      document.getElementById('status').textContent =
+        'Status: disconnected (reconnecting...)';
+      setTimeout(connectWS, 1000);
+    };
+  }
+
+  function sendCmd(c) {
+    if (ws && ws.readyState === WebSocket.OPEN) ws.send(c);
+  }
+
+  connectWS();
+</script>
+</body>
+</html>
