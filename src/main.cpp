@@ -3,8 +3,8 @@
 #include "motion.h"
 #include "web.h"
 
-
-void setup() {
+void setup()
+{
   Serial.begin(115200);
   delay(200);
 
@@ -15,14 +15,15 @@ void setup() {
   webInit();
 }
 
-
-void loop() {
+void loop()
+{
   unsigned long currentMillis = millis();
 
   webLoop();
 
   // Move servos
-  if (on || !stop0 || !stop1 || !stop2) {
+  if (on || !stop0 || !stop1 || !stop2)
+  {
     move(currentMillis);
   }
 }
